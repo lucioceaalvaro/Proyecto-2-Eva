@@ -12,9 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.routes = void 0;
 const express_1 = require("express");
 const HabiSchema_1 = require("../Schema/HabiSchema");
-const EmpSchema_1 = require("../Schema/EmpSchema");
-const ResSchema_1 = require("../Schema/ResSchema");
-const CliSchema_1 = require("../Schema/CliSchema");
 const database_1 = require("../database/database");
 class DatoRoutes {
     constructor() {
@@ -29,109 +26,6 @@ class DatoRoutes {
                 res.send(mensaje);
             });
             database_1.db.desconectarBD();
-        });
-        this.getClientes = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            yield database_1.db.conectarBD()
-                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
-                console.log(mensaje);
-                const query = yield CliSchema_1.Clientes.find({});
-                res.json(query);
-            }))
-                .catch((mensaje) => {
-                res.send(mensaje);
-            });
-            database_1.db.desconectarBD();
-        });
-        this.getEmpleados = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            yield database_1.db.conectarBD()
-                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
-                console.log(mensaje);
-                const query = yield EmpSchema_1.Empleado.find({});
-                res.json(query);
-            }))
-                .catch((mensaje) => {
-                res.send(mensaje);
-            });
-            database_1.db.desconectarBD();
-        });
-        this.getReservas = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            yield database_1.db.conectarBD()
-                .then((mensaje) => __awaiter(this, void 0, void 0, function* () {
-                console.log(mensaje);
-                const query = yield ResSchema_1.Reservas.find({});
-                res.json(query);
-            }))
-                .catch((mensaje) => {
-                res.send(mensaje);
-            });
-            database_1.db.desconectarBD();
-        });
-        this.postHabitacion = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { tipoObjeto, idHab, camas, pnoche, estado, desayuno, supletonia, spa } = req.body;
-            yield database_1.db.conectarBD();
-            const dSchema = {
-                _tipoObjeto: tipoObjeto,
-                _IdHab: idHab,
-                _Camas: camas,
-                _PNoche: pnoche,
-                _estado: estado,
-                _desayuno: desayuno,
-                _supletonia: supletonia,
-                _spa: spa
-            };
-            const oSchema = new HabiSchema_1.Habitaciones(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send('Error: ' + err));
-            yield database_1.db.desconectarBD();
-        });
-        this.postEmpleado = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { tipo, dni, salarioBase, titulacion, Nestrellas, habitaciones, nocturnidad } = req.body;
-            yield database_1.db.conectarBD();
-            const dSchema = {
-                _tipoObjeto: tipo,
-                _dni: dni,
-                _salarioBase: salarioBase,
-                _Titulacion: titulacion,
-                _NEstrella: Nestrellas,
-                _habitationes: habitaciones,
-                _Nocturnidad: nocturnidad,
-            };
-            const oSchema = new EmpSchema_1.Empleado(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send('Error: ' + err));
-            yield database_1.db.desconectarBD();
-        });
-        this.postCliente = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { dni, nombre, nTarjeta } = req.body;
-            yield database_1.db.conectarBD();
-            const dSchema = {
-                _dni: dni,
-                _nombre: nombre,
-                nTarjeta: nTarjeta
-            };
-            const oSchema = new CliSchema_1.Clientes(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send('Error: ' + err));
-            yield database_1.db.desconectarBD();
-        });
-        this.postReservas = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { clientes, nDias, habitacion, nPersonas, precio } = req.body;
-            yield database_1.db.conectarBD();
-            const dSchema = {
-                _clientes: clientes,
-                _nDias: nDias,
-                _habitacion: habitacion,
-                _nPersonas: nPersonas,
-                _precio: precio
-            };
-            const oSchema = new ResSchema_1.Reservas(dSchema);
-            yield oSchema.save()
-                .then((doc) => res.send(doc))
-                .catch((err) => res.send('Error: ' + err));
-            yield database_1.db.desconectarBD();
         });
         this._router = (0, express_1.Router)();
     }
@@ -254,24 +148,13 @@ class DatoRoutes {
     //      db.desconectarBD()
     //     }
     misRutas() {
-        //GET
         this._router.get('/habitaciones', this.getHabitaciones);
-        this._router.get('/clientes', this.getClientes);
-        this._router.get('/empleados', this.getEmpleados);
-        this._router.get('/reservas', this.getReservas);
-        //POST
-        this._router.post('/habitaciones', this.postHabitacion);
-        this._router.post('/empleados', this.postEmpleado);
-        this._router.post('/clientes', this.postCliente);
-        this._router.post('/reservas', this.postReservas);
         // this._router.get('/autos/:valor', this.getAuto)
         // this._router.post('/auto', this.crearAuto)
         // this._router.put('/modificar', this.modificarAuto)
         // this._router.put('/mod/:matriculaP/:cambioP', this.modificarAuto2)
         // this._router.delete('/auto/:matricula', this.deleteAutos)
         //this._router.put('/autos/:matriculax/:cambio', this.updatePm)
-        //UPDATE
-        //DELETE
     }
 }
 const obj = new DatoRoutes();
